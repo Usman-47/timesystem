@@ -1,0 +1,24 @@
+extends layout
+
+block content
+	#signup-admin
+		form.col-sm-offset-3.col-sm-6.form-horizontal(method="POST" action="/register/admin")
+			h2.text-center Register your company with us
+			hr
+			.form-group
+				.col-sm-6.col-sm-offset-3
+					input.form-control(name="cname" ,type="text",placeholder="Company Name" required)
+			.form-group
+				.col-sm-6.col-sm-offset-3
+					input.form-control(name="id" ,type="text",placeholder="ID (Used for login)" required)
+			.form-group
+				.col-sm-6.col-sm-offset-3
+					input.form-control(name="name" ,type="text",placeholder="Admin Name" required)
+			.form-group
+				.col-sm-6.col-sm-offset-3
+					input.form-control(name="password" ,type="password",placeholder="Password" required)
+			
+			hr
+			.form-group
+				.col-sm-offset-5.col-sm-10
+					button.btn.btn-success(type="submit") Register

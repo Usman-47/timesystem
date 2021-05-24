@@ -1,0 +1,248 @@
+extends layout
+
+block content
+	if user
+		//Scripts to find specific arrays
+		-
+			var jobs = [
+					{job:"Project Manager",rate:500},
+					{job:"HR Manager",rate:600},
+					{job:"Developer",rate:400},
+					{job:"Assistant",rate:300},
+					{job:"Consultant",rate:600}
+				]
+			var obj = jobs.find(o => o.job == emp.job);
+			var rate = obj.rate;
+			if(!rate)
+				rate = 400;
+			if (times[0]!=null && times[0].complete){
+				//Algo to find rate for an employee
+				
+				 //default rate if no job is provided
+
+				//Algo to find daywise distribution
+				var dayarray = new Array();
+				var arr = new Array();
+				var curr=times[0].intime.toDateString();
+				for(var i=0;i<times.length;i++){
+					if(times[i].complete && times[i].category!="leave"){
+						var now = times[i].intime.toDateString();
+						if(curr==now){
+							arr.push(times[i]);
+						}
+						else{
+							curr = now;
+							dayarray.push(arr);
+							arr = new Array(times[i]);
+						}
+					}
+				}
+				dayarray.push(arr);
+				
+				// Algo to find monthwise distribution
+				var montharray = new Array();
+				var arr = new Array();
+				var curr=times[0].intime.getMonth();
+				for(var i=0;i<times.length;i++){
+					if(times[i].complete && times[i].category!="leave"){
+						var now = times[i].intime.getMonth();
+						if(curr==now){
+							arr.push(times[i]);
+						}
+						else{
+							curr = now;
+							montharray.push(arr);
+							arr = new Array(times[i]);
+						}
+					}
+				}
+				montharray.push(arr);
+			}
+				const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+			
+			
+		.container
+			.col-sm-6
+				a(style="font-size:30px;" href='/users/'+emp._id) #{emp.name}
+				h3 Job - #{emp.job}
+				p #{emp.job} : #{rate} Rs. per hour
+			.col-sm-2.col-sm-offset-4.box1
+				span Working status : 
+				span.fa.fa-check-circle(style=emp.intime?"color:green;":"")
+			.row
+			br
+			br
+			
+			br
+			hr
+			br
+			.row
+				ul.nav.nav-tabs
+					li.active
+						a(data-toggle="tab" href="#detail") Detail record
+					li
+						a(data-toggle="tab" href="#daywise") Day wise
+					li
+						a(data-toggle="tab" href="#monthwise") Month wise
+					li
+						a(data-toggle="tab" href="#leave") Leaves
+				.tab-content#pic
+					#detail.tab-pane.fade.in.active
+						.table-responsive
+							table.table.col-sm-6
+								thead
+									tr
+										th.
+											Sr. no.
+										th.
+											Date
+										th.
+											In-time
+										th.
+											Out-time
+										th.
+											Duration(hrs)
+										th.
+											Pay (Rs.)
+								tbody
+									- var sum=0;
+									each time,i in times
+										if time.complete && time.category!="leave"
+											-
+												var dur = (((time.outtime - time.intime)/1000)/3600).toFixed(4);
+												var pay = (dur*rate).toFixed(2);
+												sum+=parseFloat(pay);
+											tr
+												td.
+													#{i+1}
+												td.
+													#{time.intime.toDateString()}
+												td.
+													#{time.intime.toLocaleTimeString()}
+												td.
+													#{time.outtime.toLocaleTimeString()}
+												td.
+													#{dur}
+												td.
+													#{pay}
+					#daywise.tab-pane.fade.in
+						.table-responsive
+							table.table.col-sm-6
+								thead
+									tr
+										th.
+											Date
+										th.
+											Duration(hrs)
+										th.
+											Day-Pay(Rs.)
+										th.
+											Overtime-hours
+								tbody
+									if dayarray
+										each day in dayarray
+											-
+												//Script to find daypay and overtime hours
+												var timeday=0,daypay=0;
+												for(var i in day){
+														var dur = (((day[i].outtime - day[i].intime)/1000)/3600).toFixed(4);
+														timeday+=parseFloat(dur);
+												}
+												if(timeday > 5){
+													daypay = rate * 5;
+													daypay += 1.25*rate*(timeday-5);
+												}else{
+													daypay = rate * timeday;
+												}
+												
+											tr
+												td.
+													#{day[0].intime.toDateString()}
+												td.
+													#{timeday.toFixed(4)}
+												td.
+													#{daypay.toFixed(2)}
+												td
+													if timeday > 5
+														| #{(timeday-5).toFixed(4)}
+													else
+														| -
+					#monthwise.tab-pane.fade.in
+						.table-responsive
+							table.table.col-sm-6
+								thead
+									tr
+										th.
+											Month
+										th.
+											Duration(hrs)
+										th.
+											Month-Pay(Rs.)
+								tbody
+									if montharray
+										each month in montharray
+											-
+												//Script to find daypay and overtime hours
+												var timemonth=0,monthpay=0;
+												for(var i in month){
+														var dur = (((month[i].outtime - month[i].intime)/1000)/3600).toFixed(4);
+														timemonth+=parseFloat(dur);
+												}
+												if(timemonth > 5){
+													monthpay = rate * 5;
+													monthpay += 1.25*rate*(timemonth-5);
+												}else{
+													monthpay = rate * timemonth;
+												}
+												
+											tr
+												td.
+													#{monthNames[month[0].intime.getMonth()]}
+												td.
+													#{timemonth.toFixed(4)}
+												td.
+													#{monthpay.toFixed(2)}
+					#leave.tab-pane.fade.in
+						.table-responsive
+							table.table.col-sm-6
+								thead
+									tr
+										th.
+											Date
+										th.
+											Type
+										th.
+											Pay
+								tbody
+									each leave in leaves
+										- sum += parseFloat(leave.duration * rate);
+										tr
+											td.
+												#{leave.intime.toDateString()}
+											td.
+												#{leave.leavetype}
+											td.
+												#{leave.duration * rate}
+			.row
+				br
+			.row#totalpay
+				h2 Total pay - Rs.  #{sum.toFixed(2)}
+			.row
+				button.btn.btn-primary(onclick="pic();") Download Report
+	script.
+		var pic = function download(){
+		    var a = document.body.appendChild(
+		        document.createElement("a")
+		    );
+		    a.download = "#{emp.name}-salary-report.html";
+		    var head = "<head> <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'> </head><h1>#{emp.name}<hr>";
+		    var a1 = "<h3>Detail report</h3>"+document.getElementById("detail").innerHTML+"<hr>";
+		    var a2 = "<h3>Daywise report</h3>"+document.getElementById("daywise").innerHTML+"<hr>";
+		    var a3 = "<h3>Monthly report</h3>"+document.getElementById("monthwise").innerHTML+"<hr>";
+		    var a4 = "<h3>Applied Leaves</h3>"+document.getElementById("leave").innerHTML+"<hr>";
+		    var a5 = document.getElementById("totalpay").innerHTML+"<hr>";
+		    a.href = "data:text/html,"+head + a1+a2+a3+a4+a5; // Grab the HTML
+		    a.click(); // Trigger a click on the element
+		}
+			
+	

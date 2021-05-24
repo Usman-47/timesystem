@@ -1,0 +1,81 @@
+extends layout
+
+block content
+	#admin-page
+		.container
+
+			// If user is logged in
+			
+			if user
+				if user.admin=="admin"
+					.row
+						.col-sm-4
+							h2 #{user.company}
+							p Welcome to the admin control panel
+							h4 Admin name : #{user.name}
+							h4 Admin ID : #{user.eid}
+						.col-sm-8
+							h3 Your organization key : 
+								span.key #{user._id}
+							p Distribute this key to your employees to give access to this organization
+					.row
+						hr
+					br
+					br
+					if !list
+						.row
+							a.btn.btn-primary(href='/users/list/'+user._id) Show employees list
+					if list
+						.row
+							form.form-inline.find-emp(method='POST' action="/users/find_emp")
+								.form-group
+									label(for="eid") Search ID:
+									input.form-control(name="eid" ,type="text" required)
+								button.btn.btn-primary(type="submit") View profile
+							br
+							br
+						hr
+						.row
+
+							//table to show employee list with details
+
+							.table-responsive
+								table.table.col-sm-6
+									thead
+										tr
+											th.
+												Emp_ID*
+											th.
+												Status
+											th.
+												Name
+											th.
+												Job
+											th.
+												Hire Date
+											th.
+												Email
+											th.
+
+									tbody
+										each emp in list
+											tr
+												td
+													a(href='/users/'+emp._id) #{emp.eid}
+												td
+													span.fa.fa-check-circle(style=emp.intime?"color:green;":"")
+												td.
+													#{emp.name}
+												td.
+													#{emp.job}
+												if emp.hiredate
+													td.
+														#{emp.hiredate.toDateString()}
+												else
+													td.
+														-
+												td.
+													#{emp.email}
+												td
+													a.btn.btn-danger.btn-xs(href='/delEmp/'+emp._id) Delete
+							p *Click on an employee id to view employee information

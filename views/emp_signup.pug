@@ -1,0 +1,46 @@
+extends layout
+
+block content
+	#signup-emp
+		form.col-sm-offset-3.col-sm-6.form-horizontal(method="POST" action="/register/emp")
+			h2.text-center Create your employee account
+			p.text-center You must have a company key provided by your administrator in order to signup.
+			hr
+			.form-group
+				label.control-label.col-sm-4(for="key") Company Key *  :
+				.col-sm-6
+					input.form-control(name="key" ,type="text" ,placeholder="Admin key" required)
+			.form-group
+				label.control-label.col-sm-4(for="id") Employee ID *  :
+				.col-sm-6
+					input.form-control(name="id" ,type="text",placeholder="Employee ID" required)
+			.form-group
+				label.control-label.col-sm-4(for="name") Password * :
+				.col-sm-6
+					input.form-control(name="password" ,type="password",placeholder="Password" required)
+			.form-group
+				label.control-label.col-sm-4(for="name") Employee Name *  :
+				.col-sm-6
+					input.form-control(name="name" ,type="text",placeholder="employee name" required)
+			.form-group
+				label.control-label.col-sm-4(for="job") Job* :
+				.col-sm-6
+					select.form-control(name="job" required)#job
+						option Developer
+						option Project Manager
+						option HR Manager
+						option Assistant
+						option Consultant
+			.form-group
+				label.control-label.col-sm-4(for="hdate") Hire date :
+				.col-sm-6
+					input.form-control(name="hdate" ,type="date" required)
+			.form-group
+				label.control-label.col-sm-4(for="email") email :
+				.col-sm-6
+					input.form-control(name="email" ,type="email",placeholder="Email" required)
+			
+			hr
+			.form-group
+				.col-sm-offset-4.col-sm-10
+					button.btn.btn-success(type="submit") Signup

@@ -1,0 +1,54 @@
+extends layout
+
+block content
+	#home
+		.container
+
+
+			// Container for front page heading and short info
+
+			div(class=user?"":"col-sm-6")
+				h1= title
+				h3 Welcome to #{title}
+				hr
+				ul.btn(style="border:1px solid white;")
+					li TRACK WORKING HOURS
+					li GET SALARY INFO
+					li APPLY FOR LEAVES
+				hr
+				h4.box1(style="color:lightgray;") Time card clocks system is a web-based software which is developed for the use of businesses, corporate houses, enterprises, employers of private firms and anybody who wants to keep a track of the working hour of members of one's organizations . This software provides solutions to keep automated tracked schedules of their employees' working hours and a record of their monthly payroll.
+				if user
+					h3 Welcome #{user.name}
+					if user.admin=="admin"
+						a.btn.btn-primary(href='/admin') #{user.company} Admin Panel
+					else
+						a.btn.btn-primary(href='/users/'+user._id) #{user.name}
+
+
+
+
+			// Sign-in box Renders if no user is logged in
+			
+			if !user
+				.col-sm-5.col-sm-offset-1.box2(style="padding-top:25px;")
+					h1 Login to continue
+					hr
+					form.form-horizontal(method="POST" action="/login")
+						.form-group
+							.col-sm-6.col-sm-offset-3
+								input.form-control.username(name="username" ,type="text" ,placeholder="ID" required)
+						.form-group
+							.col-sm-6.col-sm-offset-3
+								input.form-control.password(name="password" ,type="password",placeholder="Password" required)
+						input.btn.btn-success.submit(type="submit" value="Login")
+					hr
+					h4 Don't have an account ?
+					br
+					a.btn.btn-primary.btn-xs(href='/signup/emp') Register as an employee *
+					br
+					br
+					a.btn.btn-primary.btn-xs(href='/signup/admin') Register as a company admin
+					br
+					br
+					p *Company key required to register as an employee
+								
