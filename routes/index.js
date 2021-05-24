@@ -1,4 +1,4 @@
-//Load/require the modules required in this file
+//Load/require the modules required in this file ,add a bit extra 
 var express = require("express"); //Express module
 var router = express.Router(); //Router module
 var passport = require("passport"); //Passport module for auth.
