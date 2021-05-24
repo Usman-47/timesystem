@@ -6,6 +6,7 @@ var mongoose = require("mongoose");
 
 // Require the User model from the mongodb database
 var User = require("../models/User");
+var User = require("../models/User");var User = require("../models/User");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
