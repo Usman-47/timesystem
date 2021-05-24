@@ -2,11 +2,9 @@
 var express = require("express"); //Express module
 var router = express.Router(); //Router module
 var passport = require("passport"); //Passport module for auth.
-var mongoose = require("mongoose");
 
 // Require the User model from the mongodb database
 var User = require("../models/User");
-var User = require("../models/User");var User = require("../models/User");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
